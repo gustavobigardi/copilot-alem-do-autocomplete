@@ -1,0 +1,8 @@
+.DS_Store
+.claude/
+palestra
+bin/
+obj/
+*.user
+.vs/
+.idea/

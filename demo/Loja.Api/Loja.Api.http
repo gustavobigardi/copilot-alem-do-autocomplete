@@ -1,0 +1,22 @@
+@api = http://localhost:5020
+
+### Catálogo
+GET {{api}}/produtos
+
+### Pedido normal (paga frete)
+POST {{api}}/pedidos
+Content-Type: application/json
+
+{ "cliente": "Ana", "itens": [ { "produtoId": 2, "quantidade": 2 } ], "cupom": "MVPCONF10" }
+
+### Exatamente R$ 200,00 de subtotal: deveria ter frete grátis
+POST {{api}}/pedidos
+Content-Type: application/json
+
+{ "cliente": "Bruno", "itens": [ { "produtoId": 1, "quantidade": 1 }, { "produtoId": 2, "quantidade": 2 }, { "produtoId": 3, "quantidade": 2 } ] }
+
+### Sem estoque
+POST {{api}}/pedidos
+Content-Type: application/json
+
+{ "cliente": "Carla", "itens": [ { "produtoId": 5, "quantidade": 1 } ] }

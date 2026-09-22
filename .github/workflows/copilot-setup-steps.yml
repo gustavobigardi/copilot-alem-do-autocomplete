@@ -1,0 +1,22 @@
+# Prepara o ambiente do Copilot coding agent (o agente na nuvem) antes de ele começar a tarefa.
+# Sem isso ele pode não ter o SDK certo para rodar `dotnet build` e `dotnet test`.
+name: "Copilot Setup Steps"
+
+on:
+  workflow_dispatch:
+  push:
+    paths: [.github/workflows/copilot-setup-steps.yml]
+  pull_request:
+    paths: [.github/workflows/copilot-setup-steps.yml]
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - run: dotnet restore demo/Loja.Api
