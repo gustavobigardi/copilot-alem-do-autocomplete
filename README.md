@@ -67,6 +67,13 @@ copilot
 
 Dentro da sessão: `/agent revisor` para trocar de agente; `copilot instruction list`, `copilot skill list` e `copilot mcp list` (fora da sessão) mostram o que o repositório está ensinando ao Copilot.
 
+## Checklist de revisão humana (slide 32)
+
+1. **Antes de pedir:** consigo dizer em uma frase o que quero e como vou saber que ficou certo?
+2. **Ao aprovar um comando:** eu li o comando? Ele mexe fora da pasta, apaga, força push, chama a nuvem?
+3. **Ao ler o diff:** cada arquivo tocado era esperado? Os testes testam o negócio ou só passam? Entrou pacote novo, `double` em dinheiro, segredo?
+4. **Antes do merge:** rodei local? Entendo cada linha o suficiente para manter sozinho? A descrição do PR bate com o diff?
+
 ## Avisos
 
 - Os arquivos de contexto (`.github/*`) são o "leve para casa". Copie a ideia, não o conteúdo: escreva o que é verdade sobre o **seu** repositório.
