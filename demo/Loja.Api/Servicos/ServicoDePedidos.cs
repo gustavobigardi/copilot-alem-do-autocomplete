@@ -42,7 +42,7 @@ public class ServicoDePedidos(Catalogo catalogo)
         {
             if (novo.Cupom.ToUpper() == "MVPCONF10")
             {
-                desconto = subtotal * 0.1m;
+                desconto = Math.Round(subtotal * 0.1m, 2);
             }
             else
             {
@@ -51,7 +51,7 @@ public class ServicoDePedidos(Catalogo catalogo)
         }
 
         decimal frete;
-        if (subtotal > 200)
+        if (subtotal >= 200)
         {
             frete = 0;
         }
