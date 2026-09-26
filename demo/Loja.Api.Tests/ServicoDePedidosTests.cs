@@ -115,7 +115,7 @@ public class ServicoDePedidosTests
     }
 
     [Fact]
-    public void Criar_SubtotalDeExatamente200_TemFreteGratis()
+    public void Criar_SubtotalAcimaDe100_TemFreteGratis()
     {
         // Arrange
         var catalogo = new Catalogo();
@@ -123,7 +123,6 @@ public class ServicoDePedidosTests
         var novo = new NovoPedido(
             "Gustavo",
             [
-                new NovoItem(1, 1),
                 new NovoItem(2, 2),
                 new NovoItem(3, 2),
             ]);
@@ -132,8 +131,25 @@ public class ServicoDePedidosTests
         var pedido = servico.Criar(novo);
 
         // Assert
-        Assert.Equal(200m, pedido.Subtotal);
+        Assert.Equal(120m, pedido.Subtotal);
         Assert.Equal(0m, pedido.Frete);
-        Assert.Equal(200m, pedido.Total);
+        Assert.Equal(120m, pedido.Total);
+    }
+
+    [Fact]
+    public void Criar_SubtotalAte100_CobraFrete()
+    {
+        // Arrange
+        var catalogo = new Catalogo();
+        var servico = new ServicoDePedidos(catalogo);
+        var novo = new NovoPedido("Helena", [new NovoItem(2, 2)]);
+
+        // Act
+        var pedido = servico.Criar(novo);
+
+        // Assert
+        Assert.Equal(90m, pedido.Subtotal);
+        Assert.Equal(25m, pedido.Frete);
+        Assert.Equal(115m, pedido.Total);
     }
 }
