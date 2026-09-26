@@ -31,10 +31,16 @@ public class ServicoDePedidos(Catalogo catalogo)
             var produto = catalogo.Obter(item.ProdutoId);
             if (produto is null)
                 throw new ArgumentException($"Produto {item.ProdutoId} não existe.");
-            if (produto.Estoque < item.Quantidade)
-                throw new InvalidOperationException($"Sem estoque suficiente de '{produto.Nome}'.");
             itens.Add(new ItemPedido(produto.Id, produto.Nome, item.Quantidade, produto.Preco));
             subtotal = subtotal + produto.Preco * item.Quantidade;
+        }
+
+        foreach (var grupo in novo.Itens.GroupBy(item => item.ProdutoId))
+        {
+            var produto = catalogo.Obter(grupo.Key)!;
+            var quantidadeSolicitada = grupo.Sum(item => (long)item.Quantidade);
+            if (produto.Estoque < quantidadeSolicitada)
+                throw new InvalidOperationException($"Sem estoque suficiente de '{produto.Nome}'.");
         }
 
         decimal desconto = 0;
