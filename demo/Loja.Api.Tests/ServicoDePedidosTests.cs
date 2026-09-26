@@ -1,3 +1,4 @@
+using System.Reflection;
 using Loja.Api.Modelos;
 using Loja.Api.Servicos;
 using Xunit;
@@ -151,5 +152,26 @@ public class ServicoDePedidosTests
         Assert.Equal(90m, pedido.Subtotal);
         Assert.Equal(25m, pedido.Frete);
         Assert.Equal(115m, pedido.Total);
+    }
+
+    [Fact]
+    public void Criar_SubtotalDeExatamente100_CobraFrete()
+    {
+        // Arrange
+        var catalogo = new Catalogo();
+        var produtos = Assert.IsType<Dictionary<int, Produto>>(typeof(Catalogo)
+            .GetField("_produtos", BindingFlags.Instance | BindingFlags.NonPublic)!
+            .GetValue(catalogo));
+        produtos[2] = produtos[2] with { Preco = 50m };
+        var servico = new ServicoDePedidos(catalogo);
+        var novo = new NovoPedido("Iris", [new NovoItem(2, 2)]);
+
+        // Act
+        var pedido = servico.Criar(novo);
+
+        // Assert
+        Assert.Equal(100m, pedido.Subtotal);
+        Assert.Equal(25m, pedido.Frete);
+        Assert.Equal(125m, pedido.Total);
     }
 }
