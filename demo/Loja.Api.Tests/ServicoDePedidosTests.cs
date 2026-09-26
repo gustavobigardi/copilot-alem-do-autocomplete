@@ -7,6 +7,33 @@ namespace Loja.Api.Tests;
 public class ServicoDePedidosTests
 {
     [Fact]
+    public void Obter_PedidoInexistente_RetornaNulo()
+    {
+        // Arrange
+        var servico = new ServicoDePedidos(new Catalogo());
+
+        // Act
+        var pedido = servico.Obter(1);
+
+        // Assert
+        Assert.Null(pedido);
+    }
+
+    [Fact]
+    public void Obter_PedidoCriado_RetornaPedido()
+    {
+        // Arrange
+        var servico = new ServicoDePedidos(new Catalogo());
+        var criado = servico.Criar(new NovoPedido("Ana", [new NovoItem(1, 1)]));
+
+        // Act
+        var pedido = servico.Obter(criado.Id);
+
+        // Assert
+        Assert.Same(criado, pedido);
+    }
+
+    [Fact]
     public void Criar_PedidoNormalAbaixoDe200_CobraFrete()
     {
         // Arrange
@@ -100,6 +127,94 @@ public class ServicoDePedidosTests
     }
 
     [Fact]
+    public void Criar_ClienteComApenasEspacos_LancaArgumentException()
+    {
+        // Arrange
+        var servico = new ServicoDePedidos(new Catalogo());
+        var novo = new NovoPedido("   ", [new NovoItem(1, 1)]);
+
+        // Act
+        var excecao = Assert.Throws<ArgumentException>(() => servico.Criar(novo));
+
+        // Assert
+        Assert.Equal("Informe o nome do cliente.", excecao.Message);
+    }
+
+    [Fact]
+    public void Criar_SemItens_LancaArgumentException()
+    {
+        // Arrange
+        var servico = new ServicoDePedidos(new Catalogo());
+        var novo = new NovoPedido("Ana", []);
+
+        // Act
+        var excecao = Assert.Throws<ArgumentException>(() => servico.Criar(novo));
+
+        // Assert
+        Assert.Equal("O pedido precisa ter pelo menos um item.", excecao.Message);
+    }
+
+    [Fact]
+    public void Criar_ListaDeItensNula_LancaArgumentException()
+    {
+        // Arrange
+        var servico = new ServicoDePedidos(new Catalogo());
+        var novo = new NovoPedido("Ana", null!);
+
+        // Act
+        var excecao = Assert.Throws<ArgumentException>(() => servico.Criar(novo));
+
+        // Assert
+        Assert.Equal("O pedido precisa ter pelo menos um item.", excecao.Message);
+    }
+
+    [Fact]
+    public void Criar_ProdutoInexistente_LancaArgumentException()
+    {
+        // Arrange
+        var servico = new ServicoDePedidos(new Catalogo());
+        var novo = new NovoPedido("Ana", [new NovoItem(999, 1)]);
+
+        // Act
+        var excecao = Assert.Throws<ArgumentException>(() => servico.Criar(novo));
+
+        // Assert
+        Assert.Equal("Produto 999 não existe.", excecao.Message);
+    }
+
+    [Fact]
+    public void Criar_QuantidadeExatamenteIgualAoEstoque_AceitaPedido()
+    {
+        // Arrange
+        var catalogo = new Catalogo();
+        var servico = new ServicoDePedidos(catalogo);
+        var novo = new NovoPedido("Ana", [new NovoItem(2, 20)]);
+
+        // Act
+        var pedido = servico.Criar(novo);
+
+        // Assert
+        Assert.Equal(20, pedido.Itens[0].Quantidade);
+        Assert.Equal(0, catalogo.Obter(2)!.Estoque);
+    }
+
+    [Fact]
+    public void Criar_CupomInvalido_NaoBaixaEstoqueNemRegistraPedido()
+    {
+        // Arrange
+        var catalogo = new Catalogo();
+        var servico = new ServicoDePedidos(catalogo);
+        var novo = new NovoPedido("Ana", [new NovoItem(1, 1)], "DESCONTO");
+
+        // Act
+        Assert.Throws<ArgumentException>(() => servico.Criar(novo));
+
+        // Assert
+        Assert.Equal(50, catalogo.Obter(1)!.Estoque);
+        Assert.Null(servico.Obter(1));
+    }
+
+    [Fact]
     public void Criar_QuantidadeDisponivel_BaixaEstoque()
     {
         // Arrange
@@ -112,6 +227,23 @@ public class ServicoDePedidosTests
 
         // Assert
         Assert.Equal(18, catalogo.Obter(2)!.Estoque);
+    }
+
+    [Fact]
+    public void Criar_ProdutoRepetidoComQuantidadeTotalAcimaDoEstoque_RejeitaSemAlterarEstado()
+    {
+        // Arrange
+        var catalogo = new Catalogo();
+        var servico = new ServicoDePedidos(catalogo);
+        var novo = new NovoPedido("Helena", [new NovoItem(2, 11), new NovoItem(2, 10)]);
+
+        // Act
+        var excecao = Assert.Throws<InvalidOperationException>(() => servico.Criar(novo));
+
+        // Assert
+        Assert.Equal("Sem estoque suficiente de 'Caneca MVP Conf 2026'.", excecao.Message);
+        Assert.Equal(20, catalogo.Obter(2)!.Estoque);
+        Assert.Null(servico.Obter(1));
     }
 
     [Fact]
