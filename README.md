@@ -33,7 +33,7 @@ Três endpoints e uma classe de regras. Sem banco de dados de propósito: a pale
 | `POST /pedidos` | Cria um pedido: valida, aplica o cupom `MVPCONF10`, calcula o frete e baixa o estoque |
 | `GET /pedidos/{id}` | Consulta um pedido |
 
-As regras estão no comentário no topo de [`ServicoDePedidos.cs`](demo/Loja.Api/Servicos/ServicoDePedidos.cs). Na branch `demo-inicio` uma delas está errada de propósito: o frete grátis deveria valer **a partir de** R$ 200,00, mas o código usa `>`. Um pedido de exatamente R$ 200,00 (camiseta + 2 canecas + 2 pacotes de adesivos) paga frete. É o bug que o Copilot encontra na Demo 1, que os testes gerados na Demo 2 provam, e que é corrigido na Demo 3 seguindo as instruções do repositório. Na `main` o bug já está corrigido.
+As regras estão no comentário no topo de [`ServicoDePedidos.cs`](demo/Loja.Api/Servicos/ServicoDePedidos.cs). O frete grátis vale para pedidos com subtotal **acima de** R$ 100,00; pedidos de até R$ 100,00 pagam R$ 25,00 de frete.
 
 ## As demos
 

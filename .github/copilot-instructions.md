@@ -19,7 +19,7 @@ API mínima em ASP.NET Core (.NET 10 LTS) que vende camisetas, canecas e adesivo
 ## Regras de negócio (a fonte da verdade é o comentário em `ServicoDePedidos.cs`)
 
 - Cupom `MVPCONF10`: 10% de desconto sobre o subtotal. Qualquer outro cupom é inválido.
-- Frete: grátis a partir de R$ 200,00 de subtotal (200,00 inclusive); abaixo disso, R$ 25,00.
+- Frete: grátis acima de R$ 100,00 de subtotal; até esse valor, R$ 25,00.
 - Não vendemos o que não tem em estoque. Erros de validação viram `ArgumentException` (HTTP 400) e falta de estoque vira `InvalidOperationException` (HTTP 409).
 
 ## Convenções

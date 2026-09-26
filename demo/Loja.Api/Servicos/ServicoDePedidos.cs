@@ -5,7 +5,7 @@ namespace Loja.Api.Servicos;
 /// <summary>
 /// Regras da loja:
 /// - cupom MVPCONF10 dá 10% de desconto sobre o subtotal;
-/// - frete grátis a partir de R$ 200,00 de subtotal; abaixo disso, R$ 25,00;
+/// - frete grátis acima de R$ 100,00 de subtotal; até esse valor, R$ 25,00;
 /// - não vendemos o que não tem em estoque.
 /// </summary>
 public class ServicoDePedidos(Catalogo catalogo)
@@ -51,7 +51,7 @@ public class ServicoDePedidos(Catalogo catalogo)
         }
 
         decimal frete;
-        if (subtotal >= 200)
+        if (subtotal > 100m)
         {
             frete = 0;
         }
