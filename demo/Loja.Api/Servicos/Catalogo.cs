@@ -20,7 +20,17 @@ public class Catalogo
 
     public Catalogo(IEnumerable<Produto> produtos)
     {
-        _produtos = produtos.ToDictionary(produto => produto.Id);
+        if (produtos is null)
+            throw new ArgumentException("Informe os produtos do catálogo.");
+
+        _produtos = [];
+        foreach (var produto in produtos)
+        {
+            if (_produtos.ContainsKey(produto.Id))
+                throw new ArgumentException($"Produto duplicado no catálogo: {produto.Id}.");
+
+            _produtos[produto.Id] = produto;
+        }
     }
 
     public IEnumerable<Produto> Listar() => _produtos.Values.OrderBy(p => p.Id);
