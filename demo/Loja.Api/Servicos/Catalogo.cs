@@ -5,14 +5,23 @@ namespace Loja.Api.Servicos;
 /// <summary>Catálogo em memória da lojinha do MVP Conf. Sem banco de propósito.</summary>
 public class Catalogo
 {
-    private readonly Dictionary<int, Produto> _produtos = new()
+    private readonly Dictionary<int, Produto> _produtos;
+
+    public Catalogo() : this(
+        [
+            new Produto(1, "Camiseta MVP Conf 2026", 80.00m, 50),
+            new Produto(2, "Caneca MVP Conf 2026", 45.00m, 20),
+            new Produto(3, "Adesivos (pacote com 10)", 15.00m, 200),
+            new Produto(4, "Moletom MVP Conf 2026", 199.90m, 10),
+            new Produto(5, "Garrafa térmica", 110.00m, 0),
+        ])
     {
-        [1] = new(1, "Camiseta MVP Conf 2026", 80.00m, 50),
-        [2] = new(2, "Caneca MVP Conf 2026", 45.00m, 20),
-        [3] = new(3, "Adesivos (pacote com 10)", 15.00m, 200),
-        [4] = new(4, "Moletom MVP Conf 2026", 199.90m, 10),
-        [5] = new(5, "Garrafa térmica", 110.00m, 0),
-    };
+    }
+
+    public Catalogo(IEnumerable<Produto> produtos)
+    {
+        _produtos = produtos.ToDictionary(produto => produto.Id);
+    }
 
     public IEnumerable<Produto> Listar() => _produtos.Values.OrderBy(p => p.Id);
 

@@ -1,4 +1,3 @@
-using System.Reflection;
 using Loja.Api.Modelos;
 using Loja.Api.Servicos;
 using Xunit;
@@ -158,11 +157,14 @@ public class ServicoDePedidosTests
     public void Criar_SubtotalDeExatamente100_CobraFrete()
     {
         // Arrange
-        var catalogo = new Catalogo();
-        var produtos = Assert.IsType<Dictionary<int, Produto>>(typeof(Catalogo)
-            .GetField("_produtos", BindingFlags.Instance | BindingFlags.NonPublic)!
-            .GetValue(catalogo));
-        produtos[2] = produtos[2] with { Preco = 50m };
+        var catalogo = new Catalogo(
+            [
+                new Produto(1, "Camiseta MVP Conf 2026", 80.00m, 50),
+                new Produto(2, "Caneca MVP Conf 2026", 50.00m, 20),
+                new Produto(3, "Adesivos (pacote com 10)", 15.00m, 200),
+                new Produto(4, "Moletom MVP Conf 2026", 199.90m, 10),
+                new Produto(5, "Garrafa térmica", 110.00m, 0),
+            ]);
         var servico = new ServicoDePedidos(catalogo);
         var novo = new NovoPedido("Iris", [new NovoItem(2, 2)]);
 
